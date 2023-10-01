@@ -81,7 +81,7 @@ public:
         }
         return t;
     }
-    void *updataVoc(node *t, string Eng, string VieUpdate){
+    void updataVoc(node *t, string Eng, string VieUpdate){
         node *find_voc_change = find(t, Eng);
         if (!find_voc_change){
             // Nếu không tìm được từ đó trong dữ liệu thì tự động thêm vào 
@@ -91,26 +91,23 @@ public:
         }
     }
     // Đọc file xây dựng cây
-    node* readFile(string filename){
-        node *tree = NULL;
+    node* readFile(node *t, string filename){
         ifstream file(filename);
         if (!file.is_open()) {
             cout << "Could not open file: " << filename << endl;
-            return;
         }
         string Eng, Vie;
         while (file >> Eng >> Vie) {
-            tree = add(tree, Eng, Vie);
+            t = add(t, Eng, Vie);
         }
         file.close();
-        return tree;
+        return t;
     }
     // Ghi vào file 
     void writeFile(node* t, string filename) {
         ofstream file(filename);
         if (!file.is_open()) {
-            std::cerr << "Không thể mở tệp!" << std::endl;
-            return;
+            cerr << "Không thể mở tệp!" << endl;
         }
         // Sử dụng đệ quy để duyệt cây và ghi giá trị vào tệp
         if (t) {
@@ -121,6 +118,22 @@ public:
         file.close();
     }
 };
+
+void showData(node *t){
+    if (t != NULL){
+        showData(t->left);
+        cout << "--- " << t->E << ": " <<  t->V << " ---" << endl;
+        showData(t->right);
+    }
+}
+
+void del_ram(node *t){
+    if ( t != NULL){
+        del_ram(t->left);
+        del_ram(t->right);
+        delete(t);
+    }
+}
 
 void run(){
     Dictonary d;
@@ -133,13 +146,15 @@ void run(){
         cout << "Nhập 3 để: Thêm một từ mới vào cây \n";
         cout << "Nhập 4 để: Xoá bỏ một từ của từ điển đang lưu trong cây \n";
         cout << "Nhập 5 để: Cập nhập lại nghĩa một từ trong cây \n";
-        cout << "Nhập 6 để: Thoát \n";
+        cout << "Nhập 6 để: In dữ liệu ra màn hình \n";
+        cout << "Nhập 7 để: Tìm từ trong cây \n";
+        cout << "Nhập 8 để: Thoát \n";
         cout << "-------------------------------------------------------" << endl;
         cout << "Nhập n = "; cin >> n;
         if (n == 1){
             string filename;
             cout << "Nhập filename: "; cin >> filename;
-            d.readFile(filename);
+            t = d.readFile(t, filename);
         } else if (n == 2){
             string filename;
             cout << "Nhập filename xuất ra: "; cin >> filename;
@@ -149,7 +164,7 @@ void run(){
             string E, V;
             cout << "Nhập từ tiếng anh: "; cin >> E;
             cout << "Nhập nghĩa từ " << E << ": "; cin >> V;
-            d.add(t, E, V);
+            t = d.add(t, E, V);
         } else if (n == 4){
             string E, choose;
             cout << "Nhập từ tiếng Anh cần xoá trong file: "; cin >> E;
@@ -158,20 +173,35 @@ void run(){
                 cout << "Từ của bạn không có trong từ điểm" << endl;
             } else {
                 cout << temp->E << ": " << temp->V << endl;
-                cout << "Nhập Y/N, Y để đồng ý xoá từ " << E <<", N để không xoá"; cin >> choose;
+                cout << "Nhập Y/N, Y để đồng ý xoá từ " << E <<", N để không xoá: "; cin >> choose;
                 if (choose == "y" || choose == "Y"){
-                    d.del(t, E, temp->V);
+                    t = d.del(t, E, temp->V);
                     cout << "Hãy check lại dữ liệu của bạn" << endl;
                 }else {
                     cout << "---" << endl;
                 }
             }
+            delete(temp);
         } else if ( n == 5){
             string E, V;
             cout << "Nhập từ tiếng Anh sửa đổi nghĩa: "; cin >> E;
             cout << "Nhập nghĩa cần sửa đổi: "; cin >> V;
             d.updataVoc(t, E, V);
-        } else if ( n == 6){
+        } else if (n == 6){
+            cout << "-------------------------------------------------------" << endl;
+            showData(t);
+            cout << "-------------------------------------------------------" << endl;
+        } else if (n == 7){
+            string E;
+            cout << "Nhập từ tiếng Anh cần tìm: "; cin >> E;
+            node *temp = d.find(t, E);
+            if (temp){
+                cout << temp->E << ": " << t->V << endl;
+            } else {
+                cout << "Từ không có trong từ điển." << endl;
+            }
+        } else if ( n == 8){
+            del_ram(t);
             for (int i = 0; i < 6; i++){
                 cout << "END"<< endl;
             }
@@ -182,7 +212,23 @@ void run(){
 
 int main(){
 
-    run();
+    Dictonary d;
+    node *t = NULL;
 
+    t = d.add(t, "v", "vinh");
+    t = d.add(t, "a", "abc");
+    t = d.add(t, "dog", "cho");
+    t = d.add(t, "cat", "meo");
+
+    cout << "." << endl;
+
+    showData(t);
+    
+    node *temp1 = d.find(t, "v");
+    cout << temp1->V << endl;
+    node *temp2 = d.find(t, "dog");
+    cout << temp2->V << endl;
+
+    cout << "." << endl;
     return 0;
 }
