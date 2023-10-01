@@ -185,7 +185,6 @@ void run(){
                     cout << "---" << endl;
                 }
             }
-            delete(temp);
         } else if ( n == 5){
             string E, V;
             cout << "Nhập từ tiếng Anh sửa đổi nghĩa: "; cin >> E;
@@ -210,6 +209,8 @@ void run(){
                 cout << "END"<< endl;
             }
             break;
+        } else {
+            cout << "--- Vui lòng nhập số từ 1 đến 8 ---" << endl;
         }
     }
 }
