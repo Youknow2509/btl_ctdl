@@ -15,8 +15,7 @@ public:
 };
 
 class Dictonary{
-private:
-    Dictonary *tree;
+public:
     // Thêm một phần tử vào một cây
     node *add(node *t, string Eng, string Vie){
         // Vị trí thoả mãn khi nó ở ngoài cùng trỏ ra NULL hoặc cây chưa có phần tử nào thì khởi tạo
@@ -24,7 +23,7 @@ private:
             return new node(Eng, Vie);
         }
         // Duyệt qua các phần tử trong cây theo qui tắc của cây nhị phân
-        if (Eng < t->E) {
+        if (Eng < t->E){
             t->left = add(t->left, Eng, Vie);
         } else if (Eng > t->E){
             t->right = add(t->right, Eng, Vie);
@@ -45,18 +44,18 @@ private:
             return t;
         }
         // duyệt tìm phần tử trong cây thoả mãn
-        if (Eng > t->E) {
+        if (Eng > t->E){
             t->right = del(t->right, Eng, Vie);
-        } else if (Eng < t->E) {
+        } else if (Eng < t->E){
             t->left = del(t->left, Eng, Vie);
-        } else { 
+        } else{ 
             // Khi tìm đc giá trị cần xoá
             // TH node chứa giá trị cần xoá không có node con hoặc chỉ có node con bên phải
-            if(t->left == NULL) {
+            if(t->left == NULL){
                 node *temp = t->right;
                 delete(t);
                 return temp;
-            } else if(t->right == NULL) {
+            } else if(t->right == NULL){
                 node *temp = t->left;
                 delete(t);
                 return temp;
@@ -70,16 +69,120 @@ private:
         }
         return t;
     }
-public:
-    
+    // Tìm node trong cây
+    node *find(node *t, string Eng){
+        if (!t || t->E == Eng){
+            return t;
+        }
+        if (Eng > t->E){
+            t->right = find(t->right, Eng);
+        }else if (Eng < t->E){
+            t->left = find(t->left, Eng);
+        }
+        return t;
+    }
+    void *updataVoc(node *t, string Eng, string VieUpdate){
+        node *find_voc_change = find(t, Eng);
+        if (!find_voc_change){
+            // Nếu không tìm được từ đó trong dữ liệu thì tự động thêm vào 
+            t = add(t, Eng, VieUpdate);
+        } else {
+            find_voc_change->V = VieUpdate;
+        }
+    }
+    // Đọc file xây dựng cây
+    node* readFile(string filename){
+        node *tree = NULL;
+        ifstream file(filename);
+        if (!file.is_open()) {
+            cout << "Could not open file: " << filename << endl;
+            return;
+        }
+        string Eng, Vie;
+        while (file >> Eng >> Vie) {
+            tree = add(tree, Eng, Vie);
+        }
+        file.close();
+        return tree;
+    }
+    // Ghi vào file 
+    void writeFile(node* t, string filename) {
+        ofstream file(filename);
+        if (!file.is_open()) {
+            std::cerr << "Không thể mở tệp!" << std::endl;
+            return;
+        }
+        // Sử dụng đệ quy để duyệt cây và ghi giá trị vào tệp
+        if (t) {
+            file << t->E << ": " << t->V << endl;
+            writeFile(t->left, filename);
+            writeFile(t->right, filename);
+        }   
+        file.close();
+    }
 };
+
+void run(){
+    Dictonary d;
+    node *t = NULL;
+    while(true){
+        int n;
+        cout << "-------------------------------------------------------\n";
+        cout << "Nhập 1 để: Đọc dữ liệu từ tệp vào cây \n";
+        cout << "Nhập 2 để: Ghi dữ liệu từ cây ra file \n";
+        cout << "Nhập 3 để: Thêm một từ mới vào cây \n";
+        cout << "Nhập 4 để: Xoá bỏ một từ của từ điển đang lưu trong cây \n";
+        cout << "Nhập 5 để: Cập nhập lại nghĩa một từ trong cây \n";
+        cout << "Nhập 6 để: Thoát \n";
+        cout << "-------------------------------------------------------" << endl;
+        cout << "Nhập n = "; cin >> n;
+        if (n == 1){
+            string filename;
+            cout << "Nhập filename: "; cin >> filename;
+            d.readFile(filename);
+        } else if (n == 2){
+            string filename;
+            cout << "Nhập filename xuất ra: "; cin >> filename;
+            d.writeFile(t, filename);
+            cout << "Hãy kiểm tra file dữ liệu của bạn trong file !!!" << endl;
+        } else if (n == 3){
+            string E, V;
+            cout << "Nhập từ tiếng anh: "; cin >> E;
+            cout << "Nhập nghĩa từ " << E << ": "; cin >> V;
+            d.add(t, E, V);
+        } else if (n == 4){
+            string E, choose;
+            cout << "Nhập từ tiếng Anh cần xoá trong file: "; cin >> E;
+            node *temp = d.find(t, E);
+            if (temp == NULL){
+                cout << "Từ của bạn không có trong từ điểm" << endl;
+            } else {
+                cout << temp->E << ": " << temp->V << endl;
+                cout << "Nhập Y/N, Y để đồng ý xoá từ " << E <<", N để không xoá"; cin >> choose;
+                if (choose == "y" || choose == "Y"){
+                    d.del(t, E, temp->V);
+                    cout << "Hãy check lại dữ liệu của bạn" << endl;
+                }else {
+                    cout << "---" << endl;
+                }
+            }
+        } else if ( n == 5){
+            string E, V;
+            cout << "Nhập từ tiếng Anh sửa đổi nghĩa: "; cin >> E;
+            cout << "Nhập nghĩa cần sửa đổi: "; cin >> V;
+            d.updataVoc(t, E, V);
+        } else if ( n == 6){
+            for (int i = 0; i < 6; i++){
+                cout << "END"<< endl;
+            }
+            break;
+        }
+    }
+}
 
 int main(){
 
-    #ifndef ONLINE_JUDGE
-    freopen("file/inp.txt", "r", stdin);
-    freopen("file/out.txt", "w", stdout);
-    #endif
+    run();
 
     return 0;
 }
