@@ -71,15 +71,14 @@ public:
     }
     // Tìm node trong cây
     node *find(node *t, string Eng){
-        if (!t || t->E == Eng){
+       if (!t || t->E == Eng){
             return t;
         }
         if (Eng > t->E){
-            t->right = find(t->right, Eng);
-        }else if (Eng < t->E){
-            t->left = find(t->left, Eng);
+            return find(t->right, Eng);
+        } else {
+            return find(t->left, Eng);
         }
-        return t;
     }
     void updataVoc(node *t, string Eng, string VieUpdate){
         node *find_voc_change = find(t, Eng);
@@ -181,7 +180,6 @@ void run(){
                     cout << "---" << endl;
                 }
             }
-            delete(temp);
         } else if ( n == 5){
             string E, V;
             cout << "Nhập từ tiếng Anh sửa đổi nghĩa: "; cin >> E;
@@ -196,7 +194,7 @@ void run(){
             cout << "Nhập từ tiếng Anh cần tìm: "; cin >> E;
             node *temp = d.find(t, E);
             if (temp){
-                cout << temp->E << ": " << t->V << endl;
+                cout << temp->E << ": " << temp->V << endl;
             } else {
                 cout << "Từ không có trong từ điển." << endl;
             }
@@ -212,23 +210,7 @@ void run(){
 
 int main(){
 
-    Dictonary d;
-    node *t = NULL;
+    run();
 
-    t = d.add(t, "v", "vinh");
-    t = d.add(t, "a", "abc");
-    t = d.add(t, "dog", "cho");
-    t = d.add(t, "cat", "meo");
-
-    cout << "." << endl;
-
-    showData(t);
-    
-    node *temp1 = d.find(t, "v");
-    cout << temp1->V << endl;
-    node *temp2 = d.find(t, "dog");
-    cout << temp2->V << endl;
-
-    cout << "." << endl;
     return 0;
 }
