@@ -80,6 +80,7 @@ public:
             return find(t->left, Eng);
         }
     }
+    // Cập nhập dữ liệu từ trong file
     void updataVoc(node *t, string Eng, string VieUpdate){
         node *find_voc_change = find(t, Eng);
         if (!find_voc_change){
@@ -102,6 +103,7 @@ public:
         file.close();
         return t;
     }
+    // Dùng hàm mới (hàm hỗ trợ) đệ qui viết vào file
     void solveWriteFile(node* t, ofstream& file) {
         if (t) {
             solveWriteFile(t->left, file);
@@ -109,6 +111,7 @@ public:
             solveWriteFile(t->right, file);
         }
     }
+    // Hàm viết dữ liệu của cây nhị phân vào file
     void writeFile(node *t, string filename){
         ofstream file(filename);
         if (!file.is_open()) {
@@ -119,7 +122,7 @@ public:
         file.close();
     }
 };
-
+// Hỗ trợ debug - Hàm hỗ trợ hiển thị dữ liệu ra màn hình
 void showData(node *t){
     if (t != NULL){
         showData(t->left);
@@ -127,7 +130,7 @@ void showData(node *t){
         showData(t->right);
     }
 }
-
+// Dọn dẹp dữ liệu máy tính - Chạy lại file nhiều lần khi debug không bị treo máy
 void del_ram(node *t){
     if ( t != NULL){
         del_ram(t->left);
@@ -135,7 +138,7 @@ void del_ram(node *t){
         delete(t);
     }
 }
-
+// App 
 void run(){
     Dictonary d;
     node *t = NULL;
