@@ -102,18 +102,20 @@ public:
         file.close();
         return t;
     }
-    // Ghi vào file 
-    void writeFile(node* t, string filename) {
+    void solveWriteFile(node* t, ofstream& file) {
+        if (t) {
+            solveWriteFile(t->left, file);
+            file << t->E << ": " << t->V << endl;
+            solveWriteFile(t->right, file);
+        }
+    }
+    void writeFile(node *t, string filename){
         ofstream file(filename);
         if (!file.is_open()) {
             cerr << "Không thể mở tệp!" << endl;
         }
-        // Sử dụng đệ quy để duyệt cây và ghi giá trị vào tệp
-        if (t) {
-            file << t->E << ": " << t->V << endl;
-            writeFile(t->left, filename);
-            writeFile(t->right, filename);
-        }   
+        // Ghi dữ liệu của cây nhị phân vào tệp
+        solveWriteFile(t, file);
         file.close();
     }
 };
@@ -180,6 +182,7 @@ void run(){
                     cout << "---" << endl;
                 }
             }
+            delete(temp);
         } else if ( n == 5){
             string E, V;
             cout << "Nhập từ tiếng Anh sửa đổi nghĩa: "; cin >> E;
@@ -194,7 +197,7 @@ void run(){
             cout << "Nhập từ tiếng Anh cần tìm: "; cin >> E;
             node *temp = d.find(t, E);
             if (temp){
-                cout << temp->E << ": " << temp->V << endl;
+                cout << temp->E << ": " << t->V << endl;
             } else {
                 cout << "Từ không có trong từ điển." << endl;
             }
