@@ -167,7 +167,7 @@ void run(){
         } else if (n == 3){
             string E, V;
             cout << "Nhập từ tiếng anh: "; cin >> E;
-            cout << "Nhập nghĩa từ " << E << ": "; cin >> V;
+            cout << "Nhập nghĩa từ " << E << ": "; cin.ignore(); getline(cin, V);
             t = d.add(t, E, V);
         } else if (n == 4){
             string E, choose;
@@ -188,7 +188,7 @@ void run(){
         } else if ( n == 5){
             string E, V;
             cout << "Nhập từ tiếng Anh sửa đổi nghĩa: "; cin >> E;
-            cout << "Nhập nghĩa cần sửa đổi: "; cin >> V;
+            cout << "Nhập nghĩa cần sửa đổi: "; cin.ignore(); getline(cin, V);
             d.updataVoc(t, E, V);
         } else if (n == 6){
             cout << "-------------------------------------------------------" << endl;
