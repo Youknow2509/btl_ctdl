@@ -5,32 +5,38 @@ using namespace std;
 class node{
 public:
     string E, V;
+    // biến E lưu nội dung từ tiếng Anh, biến V lưu nội dung từ tiếng Việt
     node *left, *right;
+    // biến left lưu vị trí node bên trái của chính nó, biến right lưu vị trí của node bên phải của chính nó
 // Khởi tạo một node 
     node(string E, string V){
         this->E = E; 
         this->V = V;
-        left = right = NULL; 
+        left = right = NULL; // Khi khởi tạo một node thì chưa được gán hay liên kết với nút nào lên gán là NULL
     }
 };
 
 class Dictonary{
 public:
-    // Thêm một phần tử vào một cây
+    // Thêm một phần tử vào một cây, xử dụng kiểu hàm trả về địa chỉ
     node *add(node *t, string Eng, string Vie){
-        // Vị trí thoả mãn khi nó ở ngoài cùng trỏ ra NULL hoặc cây chưa có phần tử nào thì khởi tạo
+        // Xử dụng phương pháp đệ qui để thêm node vào cây dữ liệu
+        /* Vị trí thoả mãn khi nó ở ngoài cùng trỏ ra NULL hoặc cây chưa có phần tử nào thì khởi tạo, gán giá trị, 
+        link nó với node trước(hoặc toạ ra khi cây chưa có node nào)*/
         if (!t){
             return new node(Eng, Vie);
         }
         // Duyệt qua các phần tử trong cây theo qui tắc của cây nhị phân
         if (Eng < t->E){
-            t->left = add(t->left, Eng, Vie);
+            t->left = add(t->left, Eng, Vie); //không dùng return add(t->left, Eng, Vie) không các node sẽ không liên kết với nhau 
         } else if (Eng > t->E){
             t->right = add(t->right, Eng, Vie);
         }
         return t;
     }
     // Hàm (hỗ trợ) tìm node có giá trị nhỏ nhất của BST
+    // Trường hợp chính cần dùng là TH xoá node khỏi cây nhị phân khi hai nút trái phải khác NULL
+    // đệ qui, tìm giá trị, theo qui luật của BST thì vị trí thoã mãn ở dưỡi cùng bên trái so với nút gốc là nút được truyền vào
     node *minVal(node *t){
         node *temp = t;
         while(temp->left != NULL){
@@ -50,7 +56,7 @@ public:
             t->left = del(t->left, Eng, Vie);
         } else{ 
             // Khi tìm đc giá trị cần xoá
-            // TH node chứa giá trị cần xoá không có node con hoặc chỉ có node con bên phải
+            // TH node chứa giá trị cần xoá không có node con hoặc chỉ có node 1 bên thì ta kéo nút liền kề lên và xoá nút cần xoá
             if(t->left == NULL){
                 node *temp = t->right;
                 delete(t);

@@ -56,7 +56,7 @@ public:
                 getline(file, loc) &&
                 file >> amount){
             // !!!
-            file.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Bỏ qua dòng trống
+            file.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Bỏ qua dòng trống, đoạn này check gg do dính bug
             // !!!
             Book t(name, bookCode, loc, amount);
             insertBook(t);
