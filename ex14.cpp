@@ -47,7 +47,7 @@ public:
     void readFile(string filename){
         ifstream file(filename);
         if (!file.is_open()) {
-            cout << "Could not open file: " << filename << endl;
+            cout << "Không thể mở file" << endl;
         }
         string bookCode, name, loc;
         int amount;
@@ -75,23 +75,21 @@ public:
         }
         file.close();
     }
-    Book find(string nameBook){
+    Book *find(string nameBook){
         int index = hast(nameBook);
         while (nameBook != books[index].name && books[index].amount != 0){
             index = (index + 1)%sizeHastTable;
         }
-        if (nameBook != books[index].name){
-            return books[index];
+        if (nameBook == books[index].name){
+            return &books[index];
         } else {
-            Book t;
-            t.amount = 0;
-            return t;
+            return NULL;
         }
     }
     void findBook(string nameBook){
-        Book t = find(nameBook);
-        if (t.amount != 0){
-            cout << "Tên sách: " << t.name << ", mã sách: " << t.bookCode << ", vị trí: " << t.loc << ", số lượng: " << t.amount << endl;
+        Book *t = find(nameBook);
+        if (t != NULL){
+            cout << "Tên sách: " << (*t).name << ", mã sách: " << (*t).bookCode << ", vị trí: " << (*t).loc << ", số lượng: " << (*t).amount << endl;
         } else {
             cout << "Không có tìm thấy sách" << endl;
         }
@@ -112,12 +110,13 @@ public:
         }
     }
     void delBook(string nameBook){
-        Book t = find(nameBook);
-        if (t.amount != 0){
-            t.amount = 0;
-            t.bookCode = "";
-            t.loc = "";
-            t.name = "";
+        Book *t = find(nameBook);
+        if (t != NULL){
+            (*t).amount = 0;
+            (*t).name = "";
+            (*t).loc = "";
+            (*t).bookCode = "";
+            t = NULL;
         } else {
             cout << "Không tìm thấy sách" << endl;
         }
@@ -137,7 +136,7 @@ void run(){
     while (true){
         int n;
         cout << "----------------------------------------------------------------\n";
-        cout << "Nhập 1 để: Nạp thông tin sách của thư viện từ file vào bảng băm \n";
+        cout << "Nhập 1 để: Nhập dữ liệu từ file \n";
         cout << "Nhập 2 để: Tìm kiếm sách theo tên sách \n";
         cout << "Nhập 3 để: Thêm một sách mới vào thư viện \n";
         cout << "Nhập 4 để: Xoá sách theo tên \n";
@@ -150,7 +149,6 @@ void run(){
             string filename;
             cout << "Chỉ đến thư mục bạn muốn nhập dữ liệu: "; cin >> filename;
             l.readFile(filename);
-            cout << "Đã tải thư mục lên !!!" << endl;
         } else if (n == 2){
             string nameBook;
             cout << "Nhập tên sách bạn muốn tìm kiếm: ";
@@ -174,7 +172,7 @@ void run(){
             cout << "..." << endl;
         } else if (n == 4){
             string nameBook;
-            cout << "Nhập tên sách bạn muốn tìm kiếm: ";
+            cout << "Nhập tên sách bạn muốn xoá: ";
             cin.ignore();
             getline(cin, nameBook);
             l.delBook(nameBook);
