@@ -94,7 +94,7 @@ public:
     node* readFile(node *t, string filename){
         ifstream file(filename);
         if (!file.is_open()) {
-            cout << "Could not open file: " << filename << endl;
+            cout << "Không thể mở tệp" << endl;
         }
         string Eng, Vie;
         while (file >> Eng >> Vie) {
@@ -199,7 +199,7 @@ void run(){
             cout << "Nhập từ tiếng Anh cần tìm: "; cin >> E;
             node *temp = d.find(t, E);
             if (temp){
-                cout << temp->E << ": " << t->V << endl;
+                cout << temp->E << ": " << temp->V << endl;
             } else {
                 cout << "Từ không có trong từ điển." << endl;
             }
