@@ -19,7 +19,7 @@ public:
 class Dictonary{
 public:
     // Thêm một phần tử vào một cây, xử dụng kiểu hàm trả về địa chỉ
-    node *add(node *t, string Eng, string Vie){
+    node *add(node *t, string Eng, string Vie){ // Time: O(N) 
         // Xử dụng phương pháp đệ qui để thêm node vào cây dữ liệu
         /* Vị trí thoả mãn khi nó ở ngoài cùng trỏ ra NULL hoặc cây chưa có phần tử nào thì khởi tạo, gán giá trị, 
         link nó với node trước(hoặc toạ ra khi cây chưa có node nào)*/
@@ -37,7 +37,7 @@ public:
     // Hàm (hỗ trợ) tìm node có giá trị nhỏ nhất của BST
     // Trường hợp chính cần dùng là TH xoá node khỏi cây nhị phân khi hai nút trái phải khác NULL
     // đệ qui, tìm giá trị, theo qui luật của BST thì vị trí thoã mãn ở dưỡi cùng bên trái so với nút gốc là nút được truyền vào
-    node *minVal(node *t){
+    node *minVal(node *t){ // Time: O(N)
         node *temp = t;
         while(temp->left != NULL){
             temp = temp->left;
@@ -45,7 +45,7 @@ public:
         return temp;
     }
     // Xoá một phần tử bất kì trong cây
-    node *del(node *t, string Eng, string Vie){ 
+    node *del(node *t, string Eng, string Vie){  // T: O(N)
         if (!t){
             return t;
         }
@@ -68,15 +68,15 @@ public:
             }
             // TH node chứa giá trị cần xoá có hai node con bên trái và bên phải
             node *change = minVal(t->right);
-            t->E = Eng;
-            t->V = Vie;
+            t->E = change->E;
+            t->V = change->V;
             t->right = del(t, change->E, change->V);
             // CHúng ta thay thế giá trị node sau đó lập lại quá trình xoá kí tự vừa đc gán giá trị 
         }
         return t;
     }
     // Tìm node trong cây
-    node *find(node *t, string Eng){
+    node *find(node *t, string Eng){ // T: O(N)
        if (!t || t->E == Eng){
             return t;
         }
